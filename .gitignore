@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# WineMetric / ML pipeline generated files
+artifacts/
+mlruns/
+mlflow.db
+
+# VS Code
+.vscode/
+
+# Local secrets
+.env
+.env.*
