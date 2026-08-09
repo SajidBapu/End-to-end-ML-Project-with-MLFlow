@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WineMetric | Wine Quality Prediction</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f4f2;
+            color: #2f2230;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            margin-bottom: 8px;
+            font-size: 42px;
+            color: #6b1f36;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 17px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        input {
+            padding: 11px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6b1f36;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #6b1f36;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 18px;
+            border-radius: 10px;
+            background: #edf7ed;
+            text-align: center;
+        }
+
+        .result h2 {
+            margin: 0;
+            color: #245c32;
+        }
+
+        .error {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #fdeaea;
+            color: #8b1e1e;
+            text-align: center;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                margin: 15px auto;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>WineMetric</h1>
+        <p>
+            An End-to-End ML Pipeline for Predicting Wine Quality
+        </p>
+    </div>
+
+    <div class="card">
+
+        <form action="/predict" method="POST">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Fixed Acidity</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="fixed_acidity"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Volatile Acidity</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="volatile_acidity"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Citric Acid</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="citric_acid"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Residual Sugar</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="residual_sugar"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Chlorides</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="chlorides"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Free Sulfur Dioxide</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="free_sulfur_dioxide"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Total Sulfur Dioxide</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="total_sulfur_dioxide"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Density</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="density"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>pH</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="ph"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Sulphates</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="sulphates"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Alcohol</label>
+                    <input
+                        type="number"
+                        step="any"
+                        name="alcohol"
+                        required
+                    >
+                </div>
+
+            </div>
+
+            <button type="submit">
+                Predict Wine Quality
+            </button>
+
+        </form>
+
+        {% if prediction is defined %}
+
+        <div class="result">
+            <h2>
+                Predicted Wine Quality: {{ prediction }}
+            </h2>
+        </div>
+
+        {% endif %}
+
+        {% if error %}
+
+        <div class="error">
+            {{ error }}
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
