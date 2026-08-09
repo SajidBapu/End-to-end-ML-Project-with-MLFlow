@@ -12,6 +12,21 @@ from mlProject.entity.config_entity import (
     DataTransformationConfig,
 )
 
+from mlProject.entity.config_entity import (
+    DataIngestionConfig,
+    DataValidationConfig,
+    DataTransformationConfig,
+    ModelTrainerConfig,
+)
+
+from mlProject.entity.config_entity import (
+    DataIngestionConfig,
+    DataValidationConfig,
+    DataTransformationConfig,
+    ModelTrainerConfig,
+    ModelEvaluationConfig,
+)
+
 
 class ConfigurationManager:
     def __init__(
@@ -64,11 +79,48 @@ class ConfigurationManager:
         config = self.config.data_transformation
 
         create_directories(
-             [Path(config.root_dir)],
-             verbose=False,
+            [Path(config.root_dir)],
+            verbose=False,
         )
 
         return DataTransformationConfig(
             root_dir=Path(config.root_dir),
             data_path=Path(config.data_path),
+        )
+
+    def get_model_trainer_config(self) -> ModelTrainerConfig:
+        config = self.config.model_trainer
+        params = self.params.ElasticNet
+        schema = self.schema.TARGET_COLUMN
+
+        create_directories(
+            [Path(config.root_dir)],
+            verbose=False,
+        )
+
+        return ModelTrainerConfig(
+            root_dir=Path(config.root_dir),
+            train_data_path=Path(config.train_data_path),
+            test_data_path=Path(config.test_data_path),
+            model_name=config.model_name,
+            alpha=float(params.alpha),
+            l1_ratio=float(params.l1_ratio),
+            target_column=schema.name,
+        )
+
+    def get_model_evaluation_config(self) -> ModelEvaluationConfig:
+        config = self.config.model_evaluation
+
+        create_directories(
+            [Path(config.root_dir)],
+            verbose=False,
+        )
+
+        return ModelEvaluationConfig(
+            root_dir=Path(config.root_dir),
+            test_data_path=Path(config.test_data_path),
+            model_path=Path(config.model_path),
+            metric_file_name=Path(config.metric_file_name),
+            all_params=dict(self.params.ElasticNet),
+            target_column=self.schema.TARGET_COLUMN.name,
         )
