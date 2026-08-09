@@ -6,6 +6,11 @@ from mlProject.entity.config_entity import (
     DataValidationConfig,
 )
 from mlProject.utils.common import create_directories, read_yaml
+from mlProject.entity.config_entity import (
+    DataIngestionConfig,
+    DataValidationConfig,
+    DataTransformationConfig,
+)
 
 
 class ConfigurationManager:
@@ -53,4 +58,17 @@ class ConfigurationManager:
             unzip_data_dir=Path(config.unzip_data_dir),
             status_file=Path(config.status_file),
             all_schema=dict(schema),
+        )
+
+    def get_data_transformation_config(self) -> DataTransformationConfig:
+        config = self.config.data_transformation
+
+        create_directories(
+             [Path(config.root_dir)],
+             verbose=False,
+        )
+
+        return DataTransformationConfig(
+            root_dir=Path(config.root_dir),
+            data_path=Path(config.data_path),
         )
