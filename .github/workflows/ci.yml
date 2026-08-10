@@ -47,6 +47,9 @@ jobs:
       - name: Run training pipeline
         run: python main.py
 
+      - name: Run automated tests
+        run: pytest -v
+
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:

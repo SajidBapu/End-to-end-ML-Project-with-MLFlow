@@ -12,3 +12,4 @@ Flask-Cors
 matplotlib
 notebook
 gunicorn
+pytest
