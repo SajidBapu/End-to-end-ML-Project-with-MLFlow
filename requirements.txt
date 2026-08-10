@@ -11,3 +11,4 @@ Flask
 Flask-Cors
 matplotlib
 notebook
+gunicorn
