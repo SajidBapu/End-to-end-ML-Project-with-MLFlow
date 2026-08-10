@@ -90,7 +90,7 @@ class ConfigurationManager:
 
     def get_model_trainer_config(self) -> ModelTrainerConfig:
         config = self.config.model_trainer
-        params = self.params.ElasticNet
+        params = self.params.ExtraTrees
         schema = self.schema.TARGET_COLUMN
 
         create_directories(
@@ -103,8 +103,9 @@ class ConfigurationManager:
             train_data_path=Path(config.train_data_path),
             test_data_path=Path(config.test_data_path),
             model_name=config.model_name,
-            alpha=float(params.alpha),
-            l1_ratio=float(params.l1_ratio),
+            n_estimators=int(params.n_estimators),
+            random_state=int(params.random_state),
+            n_jobs=int(params.n_jobs),
             target_column=schema.name,
         )
 
@@ -121,6 +122,6 @@ class ConfigurationManager:
             test_data_path=Path(config.test_data_path),
             model_path=Path(config.model_path),
             metric_file_name=Path(config.metric_file_name),
-            all_params=dict(self.params.ElasticNet),
+            all_params=dict(self.params.ExtraTrees),
             target_column=self.schema.TARGET_COLUMN.name,
         )
