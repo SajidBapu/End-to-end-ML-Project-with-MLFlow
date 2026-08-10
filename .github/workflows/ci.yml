@@ -44,6 +44,9 @@ jobs:
         run: |
           python -c "from mlProject.pipeline.prediction import PredictionPipeline; print('Prediction pipeline import successful')"
 
+      - name: Run training pipeline
+        run: python main.py
+
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
