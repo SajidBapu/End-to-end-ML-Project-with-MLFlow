@@ -1,7 +1,7 @@
 from pathlib import Path
+import shutil
 
 import pandas as pd
-from sklearn.model_selection import train_test_split
 
 from mlProject.entity.config_entity import DataTransformationConfig
 
@@ -10,33 +10,71 @@ class DataTransformation:
     def __init__(self, config: DataTransformationConfig):
         self.config = config
 
-    def train_test_split_data(self) -> tuple[Path, Path]:
+    def prepare_train_test_data(self) -> tuple[Path, Path]:
         """
-        Read the validated dataset, split it into training and testing sets,
-        and save both files under the transformation artifacts directory.
+        Prepare the pre-defined training and real-only test datasets.
+
+        The split has already been created before pipeline execution.
+        This prevents synthetic training samples from leaking into the
+        final real evaluation set.
         """
-        if not self.config.data_path.exists():
+
+        train_source = self.config.source_train_data_path
+        test_source = self.config.source_test_data_path
+
+        if not train_source.exists():
             raise FileNotFoundError(
-                f"Dataset not found: {self.config.data_path}"
+                f"Training dataset not found: {train_source}"
             )
 
-        data = pd.read_csv(self.config.data_path)
+        if not test_source.exists():
+            raise FileNotFoundError(
+                f"Test dataset not found: {test_source}"
+            )
 
-        train, test = train_test_split(
-            data,
-            test_size=0.20,
-            random_state=42,
+        train_data = pd.read_csv(train_source)
+        test_data = pd.read_csv(test_source)
+
+        # Confirm train and test contain the same columns
+        if list(train_data.columns) != list(test_data.columns):
+            raise ValueError(
+                "Training and testing datasets do not have matching columns."
+            )
+
+        # Verify expected row counts
+        if len(train_data) != 43700:
+            raise ValueError(
+                f"Unexpected training row count: {len(train_data)}. "
+                "Expected 43700."
+            )
+
+        if len(test_data) != 1300:
+            raise ValueError(
+                f"Unexpected test row count: {len(test_data)}. "
+                "Expected 1300."
+            )
+
+        self.config.root_dir.mkdir(
+            parents=True,
+            exist_ok=True,
         )
 
         train_path = self.config.root_dir / "train.csv"
         test_path = self.config.root_dir / "test.csv"
 
-        train.to_csv(train_path, index=False)
-        test.to_csv(test_path, index=False)
+        shutil.copy2(
+            train_source,
+            train_path,
+        )
 
-        print(f"Training data saved to: {train_path}")
-        print(f"Testing data saved to: {test_path}")
-        print(f"Training rows: {len(train)}")
-        print(f"Testing rows: {len(test)}")
+        shutil.copy2(
+            test_source,
+            test_path,
+        )
+
+        print(f"Training data prepared: {train_path}")
+        print(f"Testing data prepared: {test_path}")
+        print(f"Training rows: {len(train_data)}")
+        print(f"Testing rows: {len(test_data)}")
 
         return train_path, test_path

@@ -13,9 +13,7 @@ class ModelTrainerTrainingPipeline:
         model_trainer = ModelTrainer(
             config=model_trainer_config
         )
-
         model_trainer.train()
-
 
 if __name__ == "__main__":
     print(f">>>>>> {STAGE_NAME} started <<<<<<")

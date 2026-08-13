@@ -17,10 +17,13 @@ class DataValidationConfig:
     status_file: Path
     all_schema: dict
 
+
 @dataclass(frozen=True)
 class DataTransformationConfig:
     root_dir: Path
-    data_path: Path    
+    source_train_data_path: Path
+    source_test_data_path: Path
+
 
 @dataclass(frozen=True)
 class ModelTrainerConfig:
@@ -31,8 +34,9 @@ class ModelTrainerConfig:
     n_estimators: int
     random_state: int
     n_jobs: int
-    target_column: str   
-    
+    target_column: str
+
+
 @dataclass(frozen=True)
 class ModelEvaluationConfig:
     root_dir: Path
@@ -40,4 +44,4 @@ class ModelEvaluationConfig:
     model_path: Path
     metric_file_name: Path
     all_params: dict
-    target_column: str    
+    target_column: str

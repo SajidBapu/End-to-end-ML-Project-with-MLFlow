@@ -1,30 +1,20 @@
 from pathlib import Path
 
-from mlProject.constants import CONFIG_FILE_PATH, PARAMS_FILE_PATH, SCHEMA_FILE_PATH
-from mlProject.entity.config_entity import (
-    DataIngestionConfig,
-    DataValidationConfig,
+from mlProject.constants import (
+    CONFIG_FILE_PATH,
+    PARAMS_FILE_PATH,
+    SCHEMA_FILE_PATH,
 )
-from mlProject.utils.common import create_directories, read_yaml
-from mlProject.entity.config_entity import (
-    DataIngestionConfig,
-    DataValidationConfig,
-    DataTransformationConfig,
-)
-
-from mlProject.entity.config_entity import (
-    DataIngestionConfig,
-    DataValidationConfig,
-    DataTransformationConfig,
-    ModelTrainerConfig,
-)
-
 from mlProject.entity.config_entity import (
     DataIngestionConfig,
     DataValidationConfig,
     DataTransformationConfig,
     ModelTrainerConfig,
     ModelEvaluationConfig,
+)
+from mlProject.utils.common import (
+    create_directories,
+    read_yaml,
 )
 
 
@@ -85,7 +75,8 @@ class ConfigurationManager:
 
         return DataTransformationConfig(
             root_dir=Path(config.root_dir),
-            data_path=Path(config.data_path),
+            source_train_data_path=Path(config.source_train_data_path),
+            source_test_data_path=Path(config.source_test_data_path),
         )
 
     def get_model_trainer_config(self) -> ModelTrainerConfig:

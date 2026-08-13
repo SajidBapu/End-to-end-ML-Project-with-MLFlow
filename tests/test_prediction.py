@@ -17,6 +17,7 @@ VALID_FEATURES = {
     "pH": 3.51,
     "sulphates": 0.56,
     "alcohol": 9.4,
+    "wine_type": "red",
 }
 
 

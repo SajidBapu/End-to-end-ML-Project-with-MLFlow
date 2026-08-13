@@ -14,7 +14,7 @@ class DataTransformationTrainingPipeline:
             config=data_transformation_config
         )
 
-        data_transformation.train_test_split_data()
+        data_transformation.prepare_train_test_data()
 
 
 if __name__ == "__main__":

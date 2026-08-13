@@ -41,6 +41,29 @@ class ModelComparison:
         train_data = pd.read_csv(self.train_data_path)
         test_data = pd.read_csv(self.test_data_path)
 
+        wine_type_mapping = {
+         "red": 0,
+         "white": 1,
+        }
+
+        train_data["wine_type"] = train_data["wine_type"].map(
+           wine_type_mapping
+        )
+
+        test_data["wine_type"] = test_data["wine_type"].map(
+           wine_type_mapping
+        )
+
+        if train_data["wine_type"].isnull().any():
+           raise ValueError(
+           "Unknown wine_type found in training data."
+        )
+
+        if test_data["wine_type"].isnull().any():
+           raise ValueError(
+           "Unknown wine_type found in test data."
+        )
+
         train_x = train_data.drop(columns=[self.target_column])
         train_y = train_data[self.target_column]
 

@@ -24,6 +24,18 @@ class ModelEvaluation:
     def evaluate(self) -> None:
         test_data = pd.read_csv(self.config.test_data_path)
 
+        # Encode wine type exactly the same way as during training
+        wine_type_mapping = {
+             "red": 0,
+             "white": 1
+        }
+
+        test_data["wine_type"] = test_data["wine_type"].map(wine_type_mapping)
+
+        if test_data["wine_type"].isnull().any():
+           raise ValueError("Unknown wine_type found in evaluation data.")
+
+
         model = joblib.load(self.config.model_path)
 
         test_x = test_data.drop(

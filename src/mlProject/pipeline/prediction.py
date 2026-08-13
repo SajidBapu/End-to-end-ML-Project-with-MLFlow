@@ -16,6 +16,7 @@ EXPECTED_FEATURES = [
     "pH",
     "sulphates",
     "alcohol",
+    "wine_type",
 ]
 
 
@@ -26,7 +27,7 @@ class PredictionPipeline:
     ):
         self.model_path = model_path
 
-    def _validate_features(self, features: dict[str, float]) -> None:
+    def _validate_features(self, features: dict) -> None:
         missing = set(EXPECTED_FEATURES) - set(features.keys())
         unexpected = set(features.keys()) - set(EXPECTED_FEATURES)
 
@@ -40,13 +41,32 @@ class PredictionPipeline:
                 f"Unexpected features: {sorted(unexpected)}"
             )
 
-        for feature_name, value in features.items():
+        # Validate numeric physicochemical features
+        for feature_name in EXPECTED_FEATURES:
+            if feature_name == "wine_type":
+                continue
+
+            value = features[feature_name]
+
             if not isinstance(value, (int, float)):
                 raise TypeError(
                     f"Feature '{feature_name}' must be numeric."
                 )
 
-    def predict(self, features: dict[str, float]) -> float:
+        # Validate wine type separately
+        wine_type = features["wine_type"]
+
+        if not isinstance(wine_type, str):
+            raise TypeError(
+                "Feature 'wine_type' must be either 'red' or 'white'."
+            )
+
+        if wine_type.strip().lower() not in {"red", "white"}:
+            raise ValueError(
+                "Feature 'wine_type' must be either 'red' or 'white'."
+            )
+
+    def predict(self, features: dict) -> float:
         if not self.model_path.exists():
             raise FileNotFoundError(
                 f"Trained model not found: {self.model_path}"
@@ -54,10 +74,22 @@ class PredictionPipeline:
 
         self._validate_features(features)
 
+        # Create a copy so the original input dictionary is not modified
+        processed_features = features.copy()
+
+        wine_type_mapping = {
+            "red": 0,
+            "white": 1,
+        }
+
+        processed_features["wine_type"] = wine_type_mapping[
+            processed_features["wine_type"].strip().lower()
+        ]
+
         model = joblib.load(self.model_path)
 
         input_data = pd.DataFrame(
-            [[features[name] for name in EXPECTED_FEATURES]],
+            [[processed_features[name] for name in EXPECTED_FEATURES]],
             columns=EXPECTED_FEATURES,
         )
 

@@ -26,6 +26,7 @@ def predict():
             "pH": float(request.form["ph"]),
             "sulphates": float(request.form["sulphates"]),
             "alcohol": float(request.form["alcohol"]),
+            "wine_type": request.form["wine_type"],
         }
 
         prediction_pipeline = PredictionPipeline()
