@@ -1,247 +1,355 @@
-# WineMetric
+🍷 WineMetric
 
-### An End-to-End Machine Learning Pipeline for Predicting Wine Quality
+Model-Assisted Wine Quality Prediction
 
-WineMetric is an end-to-end machine learning project that predicts red wine quality from physicochemical laboratory measurements.
+<p align="center">
+  <strong>An end-to-end machine learning pipeline for predicting red and white wine quality from physicochemical measurements.</strong>
+</p>
 
-The project demonstrates a complete production-oriented machine learning workflow including data ingestion, validation, transformation, model training, model comparison, MLflow experiment tracking, automated testing, Flask-based prediction, Docker containerization, and GitHub Actions CI.
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white" alt="Python 3.12">
+  <img src="https://img.shields.io/badge/Flask-Web%20App-black?logo=flask&logoColor=white" alt="Flask">
+  <img src="https://img.shields.io/badge/scikit--learn-ML-orange?logo=scikitlearn&logoColor=white" alt="scikit-learn">
+  <img src="https://img.shields.io/badge/MLflow-Tracking-0194E2?logo=mlflow&logoColor=white" alt="MLflow">
+  <img src="https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/GitHub%20Actions-CI-2088FF?logo=githubactions&logoColor=white" alt="GitHub Actions">
+</p>
 
-> **From lab sheet to quality score — before the bottle is filled.**
+From lab sheet to quality score — before the bottle is filled.
 
----
+📌 Project Overview
 
-## Project Overview
+WineMetric is an end-to-end machine learning project that predicts red and white wine quality using physicochemical laboratory measurements and wine type.
 
-Wine quality evaluation traditionally depends heavily on human sensory assessment. Although expert tasting remains important, physicochemical laboratory measurements can provide an earlier and more objective indication of wine quality.
+The project demonstrates a production-oriented ML workflow covering:
 
-WineMetric uses laboratory chemistry measurements to predict a wine quality score.
+Data Ingestion → Validation → Transformation → Model Training → Model Comparison → Evaluation → MLflow Tracking → Flask Prediction App → Docker → GitHub Actions CI
 
-The pipeline:
+Wine quality is traditionally evaluated through sensory assessment. WineMetric explores how laboratory measurements can support an earlier, data-driven estimate of wine quality while recognizing that machine learning does not replace professional tasting.
 
-1. Downloads the wine quality dataset
-2. Validates the incoming schema
-3. Splits the data into training and testing sets
-4. Trains machine learning models
-5. Evaluates model performance
-6. Tracks experiments with MLflow
-7. Selects a stronger production model
-8. Saves the trained model
-9. Serves predictions through Flask
-10. Packages the application with Docker
-11. Runs automated tests and CI through GitHub Actions
+✨ Project Highlights
 
----
+Area
 
-# Architecture
+Implementation
 
-```mermaid
+Problem Type
+
+Regression
+
+Production Model
+
+ExtraTreesRegressor
+
+Wine Types
+
+Red + White
+
+Model Inputs
+
+12
+
+Training Rows
+
+43,700
+
+Test Rows
+
+1,300
+
+Experiment Tracking
+
+MLflow
+
+Web Application
+
+Flask
+
+Testing
+
+pytest
+
+Containerization
+
+Docker
+
+CI
+
+GitHub Actions
+
+📊 Production Model Performance
+
+ExtraTreesRegressor
+
+Metric
+
+Score
+
+RMSE
+
+0.5974
+
+MAE
+
+0.3848
+
+R²
+
+0.5315
+
+The final metrics are calculated on the same 1,300-row test set used for model comparison.
+
+Model Comparison
+
+Model
+
+RMSE ↓
+
+MAE ↓
+
+R² ↑
+
+Extra Trees
+
+0.5974
+
+0.3848
+
+0.5315
+
+Random Forest
+
+0.6431
+
+0.4405
+
+0.4571
+
+Gradient Boosting
+
+0.8148
+
+0.6311
+
+0.1287
+
+ElasticNet
+
+0.8230
+
+0.6417
+
+0.1109
+
+Extra Trees achieved the strongest overall performance and was selected as the production model.
+
+🧠 Machine Learning Workflow
+
 flowchart TD
     A[Wine Quality Dataset] --> B[Data Ingestion]
     B --> C[Data Validation]
     C --> D[Data Transformation]
     D --> E[Model Training]
     E --> F[Model Evaluation]
-    F --> G[MLflow Experiment Tracking]
-    F --> H[model.joblib]
-    H --> I[Prediction Pipeline]
-    I --> J[Flask Web Application]
-    J --> K[Gunicorn]
-    K --> L[Docker Container]
-
-    E --> M[Model Comparison]
-    M --> G
-    M --> N[ExtraTrees Selected]
-    N --> H
-
+    E --> G[Model Comparison]
+    F --> H[MLflow Tracking]
+    G --> H
+    G --> I[Extra Trees Selected]
+    I --> J[model.joblib]
+    J --> K[Prediction Pipeline]
+    K --> L[Flask Web App]
+    L --> M[Gunicorn]
+    M --> N[Docker Container]
     O[pytest] --> P[GitHub Actions CI]
-    L --> P
-```
+    N --> P
 
----
+🗂️ Dataset
 
-# Machine Learning Pipeline
+WineMetric uses a prepared red and white wine quality dataset based on the UCI Wine Quality data.
 
-## 1. Data Ingestion
+Dataset Characteristics
 
-The ingestion stage downloads and extracts the wine quality dataset.
+Item
 
-Output:
+Value
 
-```text
+Total working rows
+
+45,000
+
+Training rows
+
+43,700
+
+Test rows
+
+1,300
+
+Model input features
+
+12
+
+Target variables
+
+1
+
+Input Features
+
+#
+
+Feature
+
+1
+
+Fixed acidity
+
+2
+
+Volatile acidity
+
+3
+
+Citric acid
+
+4
+
+Residual sugar
+
+5
+
+Chlorides
+
+6
+
+Free sulfur dioxide
+
+7
+
+Total sulfur dioxide
+
+8
+
+Density
+
+9
+
+pH
+
+10
+
+Sulphates
+
+11
+
+Alcohol
+
+12
+
+Wine type (red or white)
+
+Target: quality
+
+⚙️ Pipeline Components
+
+1. Data Ingestion
+
+Downloads and extracts the prepared WineMetric dataset package.
+
 artifacts/data_ingestion/
 ├── data.zip
-└── winequality-red.csv
-```
+└── winemetric_quality/
+    ├── winemetric_quality.csv
+    ├── winemetric_train.csv
+    └── winemetric_test.csv
 
----
+2. Data Validation
 
-## 2. Data Validation
+Validates the incoming dataset against the expected schema defined in:
 
-The validation stage checks whether the incoming dataset contains the expected features defined in:
-
-```text
 schema.yaml
-```
 
-Validation results are written to:
+Validation status is written to:
 
-```text
 artifacts/data_validation/status.txt
-```
 
 The pipeline stops if the required schema is not satisfied.
 
----
+3. Data Transformation
 
-## 3. Data Transformation
+Prepares the fixed training and test files used by the model pipeline.
 
-The dataset is split into training and testing sets using a reproducible random seed.
-
-Current split:
-
-```text
-Training samples: 1279
-Testing samples:   320
-```
+Training samples: 43,700
+Testing samples:   1,300
 
 Generated files:
 
-```text
 artifacts/data_transformation/train.csv
 artifacts/data_transformation/test.csv
-```
 
----
+4. Model Training
 
-## 4. Model Training
+WineMetric originally used ElasticNet Regression as a baseline.
 
-WineMetric initially used **ElasticNet Regression** as the baseline model.
+After model comparison, Extra Trees Regression achieved the strongest results and was selected as the production model.
 
-After model comparison, **Extra Trees Regression** produced significantly better evaluation results and was promoted to the production model.
+The trained model is stored at:
 
-The trained model is saved as:
-
-```text
 artifacts/model_trainer/model.joblib
-```
 
----
+Current model configuration:
 
-# Model Performance
+ExtraTrees:
+  n_estimators: 200
+  random_state: 42
+  n_jobs: -1
 
-## Production Model
+🔬 MLflow Experiment Tracking
 
-**ExtraTreesRegressor**
+WineMetric integrates MLflow to track machine learning experiments.
 
-| Metric | Score |
-|---|---:|
-| RMSE | 0.5400 |
-| MAE | 0.3871 |
-| R² | 0.5537 |
+Tracked information includes:
 
-### Baseline ElasticNet
+model parameters
 
-| Metric | Score |
-|---|---:|
-| RMSE | 0.6929 |
-| MAE | 0.5544 |
-| R² | 0.2653 |
+RMSE
 
-The Extra Trees model substantially improved predictive performance compared with the original ElasticNet baseline.
+MAE
 
----
+R²
 
-# Dataset
+trained model artifacts
 
-WineMetric uses the **Wine Quality – Red Wine** dataset from the UCI Machine Learning Repository.
+Experiments:
 
-Dataset characteristics:
-
-- **1,599 observations**
-- **11 input features**
-- **1 target variable**
-- Target: `quality`
-
-### Input Features
-
-1. Fixed acidity
-2. Volatile acidity
-3. Citric acid
-4. Residual sugar
-5. Chlorides
-6. Free sulfur dioxide
-7. Total sulfur dioxide
-8. Density
-9. pH
-10. Sulphates
-11. Alcohol
-
----
-
-# MLflow Experiment Tracking
-
-WineMetric integrates **MLflow** for experiment tracking.
-
-Each model run can track:
-
-- model parameters
-- RMSE
-- MAE
-- R²
-- trained model artifacts
-
-Experiments include:
-
-```text
 WineMetric
 WineMetric-Model-Comparison
-```
 
-Start the local MLflow server with:
+Start MLflow locally:
 
-```bash
 mlflow server --host 127.0.0.1 --port 5000 --workers 1
-```
 
-Then open:
+Open:
 
-```text
 http://127.0.0.1:5000
-```
 
----
+🔮 Prediction Pipeline
 
-# Model Comparison
+The prediction pipeline validates incoming data before running inference.
 
-WineMetric does not rely on the first model that was trained.
+Validation includes:
 
-Multiple regression algorithms were evaluated and tracked using MLflow.
+missing features
 
-The comparison process included models such as:
+unexpected features
 
-- ElasticNet
-- Random Forest
-- Gradient Boosting
-- Extra Trees
+non-numeric chemistry values
 
-Extra Trees achieved the strongest evaluation result during the comparison and was promoted to the production pipeline.
+valid wine type (red or white)
 
----
-
-# Prediction Pipeline
-
-The prediction pipeline loads the trained model and validates incoming features before prediction.
-
-It checks for:
-
-- missing features
-- unexpected features
-- non-numeric values
-- correct feature ordering
+correct feature ordering
 
 Example:
 
-```python
 from mlProject.pipeline.prediction import PredictionPipeline
 
 features = {
@@ -256,155 +364,134 @@ features = {
     "pH": 3.51,
     "sulphates": 0.56,
     "alcohol": 9.4,
+    "wine_type": "red",
 }
 
 pipeline = PredictionPipeline()
-
 prediction = pipeline.predict(features)
 
 print(prediction)
-```
 
----
+🌐 Flask Web Application
 
-# Flask Web Application
+WineMetric includes a browser-based prediction interface built with Flask.
 
-WineMetric provides a browser-based prediction interface using Flask.
+Users can:
 
-Users can enter all 11 wine chemistry measurements and receive a predicted wine quality score.
+Select red or white wine
+
+Enter 11 physicochemical measurements
+
+Submit the form
+
+Receive a predicted wine quality score
+
+The interface also supports wine-type-specific validation ranges and quick demo samples.
 
 Run locally:
 
-```bash
 python app.py
-```
 
-Then open:
+Open:
 
-```text
 http://127.0.0.1:8080
-```
 
-Example prediction from the current Extra Trees production model:
+✅ Automated Testing
 
-```text
-Predicted Wine Quality: 5.0
-```
+WineMetric uses pytest for automated validation.
 
----
+Prediction Tests
 
-# Automated Testing
+valid prediction
 
-WineMetric uses **pytest** for automated testing.
+missing feature validation
 
-The current test suite covers:
+unexpected feature validation
 
-### Prediction tests
+non-numeric input validation
 
-- valid prediction
-- missing feature validation
-- unexpected feature validation
-- non-numeric input validation
+Flask Tests
 
-### Flask tests
+home page response
 
-- home page response
-- valid prediction request
-- invalid prediction input handling
+valid prediction request
 
-Run all tests:
-
-```bash
-pytest -v
-```
-
-Current result:
-
-```text
-7 passed
-```
-
----
-
-# Continuous Integration
-
-WineMetric uses **GitHub Actions**.
-
-The CI workflow runs automatically for pushes and pull requests to the `main` branch.
-
-The workflow performs:
-
-```text
-Checkout repository
-        ↓
-Set up Python 3.12
-        ↓
-Install dependencies
-        ↓
-Install WineMetric
-        ↓
-Verify imports
-        ↓
-Run training pipeline
-        ↓
-Run pytest
-        ↓
-Build Docker image
-        ↓
-CI Passed
-```
-
-Workflow configuration:
-
-```text
-.github/workflows/ci.yml
-```
-
----
-
-# Docker
-
-WineMetric can run inside a Docker container.
-
-## Build the image
-
-```bash
-docker build -t winemetric:1.0 .
-```
-
-## Run the container
-
-```bash
-docker run --rm --name winemetric-app -p 8080:8080 winemetric:1.0
-```
-
-Then open:
-
-```text
-http://localhost:8080
-```
-
-The Docker container uses:
-
-- Python 3.12
-- Flask
-- Gunicorn
-- non-root application user
-- Extra Trees production model
-
----
-
-# Run the Complete Training Pipeline
+invalid prediction handling
 
 Run:
 
-```bash
+pytest -v
+
+Current result:
+
+7 passed
+
+🔁 Continuous Integration
+
+WineMetric uses GitHub Actions for continuous integration.
+
+The CI workflow runs for:
+
+pushes to main
+
+pull requests targeting main
+
+CI Pipeline
+
+Checkout Repository
+        ↓
+Set Up Python 3.12
+        ↓
+Install Dependencies
+        ↓
+Install WineMetric
+        ↓
+Verify Package Imports
+        ↓
+Run Training Pipeline
+        ↓
+Run pytest
+        ↓
+Build Docker Image
+        ↓
+CI Passed
+
+Workflow:
+
+.github/workflows/ci.yml
+
+🐳 Docker
+
+Build
+
+docker build -t winemetric:1.0 .
+
+Run
+
+docker run --rm --name winemetric-app -p 8080:8080 winemetric:1.0
+
+Open:
+
+http://localhost:8080
+
+The container uses:
+
+Python 3.12
+
+Flask
+
+Gunicorn
+
+non-root application user
+
+Extra Trees production model
+
+▶️ Run the Complete Pipeline
+
 python main.py
-```
 
 Pipeline sequence:
 
-```text
 Data Ingestion
       ↓
 Data Validation
@@ -416,19 +503,13 @@ Model Training
 Model Evaluation
       ↓
 MLflow Tracking
-```
 
-A successful run finishes with:
+Expected successful completion:
 
-```text
 WineMetric pipeline completed successfully
-```
 
----
+📁 Project Structure
 
-# Project Structure
-
-```text
 End-to-end-ML-Project-with-MLFlow/
 │
 ├── .github/
@@ -471,153 +552,150 @@ End-to-end-ML-Project-with-MLFlow/
 ├── requirements.txt
 ├── schema.yaml
 └── setup.py
-```
 
----
+🧰 Technology Stack
 
-# Configuration
+Category
 
-WineMetric separates configuration from application code.
+Technologies
 
-## `config/config.yaml`
+Machine Learning
 
-Contains artifact locations and pipeline configuration.
+Python, scikit-learn, Extra Trees Regression, MLflow
 
-## `params.yaml`
+Data Processing
 
-Contains production model hyperparameters.
+Pandas, NumPy
 
-Example:
+Web
 
-```yaml
-ExtraTrees:
-  n_estimators: 200
-  random_state: 42
-  n_jobs: -1
-```
+Flask, Gunicorn, HTML, CSS, JavaScript
 
-## `schema.yaml`
+Configuration
 
-Defines expected dataset columns and target variable.
+PyYAML, python-box
 
----
+Serialization
 
-# Technologies
+Joblib
 
-### Machine Learning
+Testing
 
-- Python
-- scikit-learn
-- Extra Trees Regression
-- MLflow
+pytest
 
-### Data Processing
+DevOps
 
-- Pandas
-- NumPy
+Docker, GitHub Actions, Git, GitHub
 
-### Configuration & Serialization
+♻️ Reproducibility
 
-- PyYAML
-- Joblib
-- python-box
+A clean environment can:
 
-### Web Application
+Clone the repository
 
-- Flask
-- Gunicorn
-- HTML/CSS
+Install dependencies
 
-### Testing
+Download the prepared dataset package
 
-- pytest
+Validate the dataset
 
-### DevOps
+Prepare the training and test files
 
-- Docker
-- GitHub Actions
-- Git
-- GitHub
+Train the model
 
----
+Evaluate the model
 
-# Reproducibility
+Generate the model artifact
 
-The project is designed so a clean CI environment can:
+Run automated tests
 
-1. clone the repository
-2. install dependencies
-3. download the dataset
-4. validate the dataset
-5. train the model
-6. evaluate the model
-7. create the model artifact
-8. run automated tests
-9. build the Docker image
+Build the Docker image
 
-The trained model therefore does not need to be manually committed to Git.
+The trained model does not need to be manually committed to Git.
 
----
+🔐 Security Considerations
 
-# Security Considerations
+WineMetric follows several secure-development practices:
 
-The project follows several basic secure-development practices:
+environment files are excluded from Git
 
-- environment files are excluded from Git
-- generated artifacts are excluded from version control
-- Docker runs the application as a non-root user
-- Flask debug mode is not used as the production container server
-- Gunicorn serves the production container
-- GitHub Actions receives read-only repository content permission
-- secrets should be supplied using environment variables or GitHub Secrets
+generated artifacts are excluded from version control
 
----
+prediction inputs are validated before inference
 
-# Future Improvements
+Docker runs the application as a non-root user
 
-Possible future extensions include:
+Flask debug mode is not used as the production container server
 
-- hyperparameter tuning
-- additional model comparison
-- feature importance visualization
-- model registry integration
-- cloud deployment
-- model monitoring
-- prediction drift monitoring
-- REST API endpoint
-- additional integration tests
+Gunicorn serves the production container
 
----
+GitHub Actions uses read-only repository content permission
 
-# Reference
+secrets should be supplied through environment variables or GitHub Secrets
 
-Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009).  
-*Modeling wine preferences by data mining from physicochemical properties.*  
+⚠️ Limitations
+
+WineMetric predicts quality from physicochemical measurements and wine type only.
+
+The model:
+
+does not replace professional sensory evaluation
+
+depends on the quality and representativeness of the training data
+
+should be interpreted cautiously for rare quality values with limited examples
+
+should not be treated as a guarantee of consumer preference or commercial wine quality
+
+🚀 Future Improvements
+
+Potential future extensions include:
+
+hyperparameter tuning
+
+broader model comparison
+
+feature importance visualization
+
+model registry integration
+
+cloud deployment
+
+model monitoring
+
+prediction drift monitoring
+
+REST API endpoint
+
+additional integration tests
+
+📚 Reference
+
+Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009).
+Modeling wine preferences by data mining from physicochemical properties.
 Decision Support Systems, 47(4), 547–553.
 
-Dataset: UCI Machine Learning Repository — Wine Quality Dataset.
+Dataset: UCI Machine Learning Repository — Wine Quality Dataset
 
----
+🎓 Capstone
 
-# Capstone
+SAIT — Data Analytics
+Tech CapCon Spring 2026
 
-**SAIT — Data Analytics**
+Team Members
 
-**Tech CapCon Spring 2026**
+Sharndeep Kaur
 
-### Team Members
+Sajid Bapu
 
-- Sharndeep Kaur
-- Sajid Bapu
-- Harpreet Kaur
-- Rakhsha Varu
+Harpreet Kaur
 
-### Supervisor
+Rakhsha Varu
 
-**Tee Wijesooriya**
+Supervisor
 
----
+Tee Wijesooriya
 
-## License
+📄 License
 
 This project was developed for academic and educational purposes as part of the SAIT Data Analytics Capstone Project.
